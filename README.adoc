@@ -1,1 +1,3 @@
 = Kapt Code Generation
+
+Started with link:https://github.com/JamiesWhiteShirt/kapt-example[JamiesWhiteShirt kapt-example].
