@@ -10,9 +10,9 @@ class CarTest {
         val car = Car()
 
         // act
-        val result = car.toJson()
+        val result = car.greet()
 
         // assert
-        assertThat(result).isEqualTo("{ }")
+        assertThat(result).isEqualTo("Hello World")
     }
 }

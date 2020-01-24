@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.asTypeName
-import de.richargh.sandbox.kaptcodegen.annnotations.Interesting
+import de.richargh.sandbox.kaptcodegen.annnotations.Greets
 import java.io.File
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
@@ -19,7 +19,7 @@ import javax.tools.Diagnostic
 class KtAnnotationProcessor: AbstractProcessor() {
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return mutableSetOf(Interesting::class.java.name)
+        return mutableSetOf(Greets::class.java.name)
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {
@@ -27,7 +27,7 @@ class KtAnnotationProcessor: AbstractProcessor() {
     }
 
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        roundEnv.getElementsAnnotatedWith(Interesting::class.java).forEach {
+        roundEnv.getElementsAnnotatedWith(Greets::class.java).forEach {
             processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "${it.simpleName} is interesting.")
             val pack = processingEnv.elementUtils.getPackageOf(it).toString()
             generateClass(it, pack)
@@ -36,31 +36,12 @@ class KtAnnotationProcessor: AbstractProcessor() {
     }
 
     private fun generateClass(klass: Element, pack: String) {
-        val fileName = "${klass.simpleName}KsonUtil"
-        val string = StringBuilder("return \"{ ")
-        klass.enclosedElements.forEach {
-            println("$it ${it.kind}")
-            when (it.kind) {
-                ElementKind.FIELD -> {
-                    string.append("\\\"")
-                    string.append(it)
-                    string.append("\\\": ")
-                    string.append("\\\"")
-                    string.append("\$")
-                    string.append(it)
-                    string.append("\\\"")
-                    string.append(' ')
-                }
-                else              -> {
-                }
-            }
-        }
-        string.append("}\"")
+        val fileName = "${klass.simpleName}Greeter"
         val file = FileSpec.builder(pack, fileName)
-                .addFunction(FunSpec.builder("toJson")
+                .addFunction(FunSpec.builder("greet")
                                      .returns(String::class)
                                      .receiver(klass.asType().asTypeName())
-                                     .addStatement(string.toString())
+                                     .addStatement("""return "Hello World"""")
                                      .build())
                 .build()
 

@@ -1,7 +1,6 @@
 package de.richargh.sandbox.kaptcodegen.app
 
-import de.richargh.sandbox.kaptcodegen.annnotations.Interesting
+import de.richargh.sandbox.kaptcodegen.annnotations.Greets
 
-@Interesting
-class Car {
-}
+@Greets
+class Car
