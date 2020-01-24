@@ -7,9 +7,9 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
-@AutoService(Processor::class) // registers this service
+@AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("de.richargh.sandbox.kaptcodegen.annnotations")
+@SupportedAnnotationTypes("de.richargh.sandbox.kaptcodegen.annnotations.Interesting")
 class KtAnnotationProcessor : AbstractProcessor() {
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         roundEnv.getElementsAnnotatedWith(Interesting::class.java).forEach {
