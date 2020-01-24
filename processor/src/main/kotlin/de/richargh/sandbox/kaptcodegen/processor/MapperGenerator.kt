@@ -1,10 +1,8 @@
 package de.richargh.sandbox.kaptcodegen.processor
 
 import com.google.auto.service.AutoService
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.TypeSpec
-import de.richargh.sandbox.kaptcodegen.annnotations.GenName
+import com.squareup.kotlinpoet.*
+import de.richargh.sandbox.kaptcodegen.annnotations.Mapper
 import java.io.File
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
@@ -13,10 +11,10 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
 @AutoService(Processor::class)
-class Generator: AbstractProcessor() {
+class MapperGenerator: AbstractProcessor() {
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return mutableSetOf(GenName::class.java.name)
+        return mutableSetOf(Mapper::class.java.name)
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {
@@ -24,7 +22,7 @@ class Generator: AbstractProcessor() {
     }
 
     override fun process(set: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        roundEnv.getElementsAnnotatedWith(GenName::class.java).forEach {
+        roundEnv.getElementsAnnotatedWith(Mapper::class.java).forEach {
             val className = it.simpleName.toString()
             println("Processing: $className")
             val pack = processingEnv.elementUtils.getPackageOf(it).toString()
@@ -34,11 +32,12 @@ class Generator: AbstractProcessor() {
     }
 
     private fun generateClass(className: String, pack: String) {
-        val fileName = "Generated_$className"
+        val fileName = "${className}Mapper"
         val file = FileSpec.builder(pack, fileName)
                 .addType(TypeSpec.classBuilder(fileName)
-                                 .addFunction(FunSpec.builder("getName")
-                                                      .addStatement("return \"World\"")
+                                 .addFunction(FunSpec.builder("map")
+                                                      .addParameter(className, ClassName(pack, className))
+                                                      .addStatement("""return $className("bar")""")
                                                       .build())
                                  .build())
                 .build()

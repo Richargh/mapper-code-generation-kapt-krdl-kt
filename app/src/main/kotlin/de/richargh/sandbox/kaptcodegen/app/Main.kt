@@ -1,11 +1,11 @@
 package de.richargh.sandbox.kaptcodegen.app
 
-import de.richargh.sandbox.kaptcodegen.annnotations.GenName
+import de.richargh.sandbox.kaptcodegen.annnotations.Mapper
 
 fun main(args: Array<String>) {
-    println("Hello ${Generated_Hello().getName()}")
+    println("Hello ${HelloMapper().map(Hello("none"))}")
     println(Car().greet())
 }
 
-@GenName
-class Hello
+@Mapper
+data class Hello(val name: String)

@@ -1,3 +1,3 @@
 package de.richargh.sandbox.kaptcodegen.annnotations
 
-annotation class GenName
+annotation class Mapper
