@@ -9,8 +9,12 @@ import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("de.richargh.sandbox.kaptcodegen.annnotations.Interesting")
 class KtAnnotationProcessor : AbstractProcessor() {
+
+    override fun getSupportedAnnotationTypes(): MutableSet<String> {
+        return mutableSetOf(Interesting::class.java.name)
+    }
+
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         roundEnv.getElementsAnnotatedWith(Interesting::class.java).forEach {
             processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "${it.simpleName} is interesting.")
