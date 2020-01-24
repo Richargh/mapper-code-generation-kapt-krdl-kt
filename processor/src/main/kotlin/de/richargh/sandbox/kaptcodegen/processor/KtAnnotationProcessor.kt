@@ -8,11 +8,14 @@ import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 class KtAnnotationProcessor : AbstractProcessor() {
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return mutableSetOf(Interesting::class.java.name)
+    }
+
+    override fun getSupportedSourceVersion(): SourceVersion {
+        return SourceVersion.RELEASE_8
     }
 
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
