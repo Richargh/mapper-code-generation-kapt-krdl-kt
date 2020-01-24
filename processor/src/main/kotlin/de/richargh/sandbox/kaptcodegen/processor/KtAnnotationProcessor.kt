@@ -28,7 +28,7 @@ class KtAnnotationProcessor: AbstractProcessor() {
 
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         roundEnv.getElementsAnnotatedWith(Greets::class.java).forEach {
-            processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "${it.simpleName} is interesting.")
+            processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "${it.simpleName} wants to greet.")
             val pack = processingEnv.elementUtils.getPackageOf(it).toString()
             generateClass(it, pack)
         }

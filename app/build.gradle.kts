@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-    mainClassName = "de.richargh.sandbox.kaptcodegen.app.mainKt"
+    mainClassName = "de.richargh.sandbox.kaptcodegen.app.MainKt"
 }
 
 dependencies {
@@ -16,9 +16,8 @@ dependencies {
 
     /** Project dependencies **/
     implementation(project(":annotations"))
-    implementation(project(":processor"))
+    compileOnly(project(":processor"))
     kapt(project(":processor"))
-    //compileOnly(project(":processor"))
 
     /** Main dependencies **/
     // none

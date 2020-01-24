@@ -1,3 +1,13 @@
 = Kapt Code Generation
 
-Started with link:https://github.com/JamiesWhiteShirt/kapt-example[JamiesWhiteShirt kapt-example].
+*Features*
+
+* Annnotation-based code generation for Kotlin
+
+== Usage
+
+Run `./gradlew clean build` or `./gradlew clean run` then check out the code in `app/build/generated/source/kaptKotlin`.
+
+== Inspiration
+
+Started with link:https://github.com/JamiesWhiteShirt/kapt-example[JamiesWhiteShirt kapt-example], then added some link:https://github.com/miquelbeltran/kotlin-code-gen-sample/[miquelbeltran kotlin-code-gen-sample].
