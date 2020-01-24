@@ -8,6 +8,8 @@
 
 Run `./gradlew clean build` or `./gradlew clean run` then check out the code in `app/build/generated/source/kaptKotlin`.
 
+(!) Note that you need to run `./gradlew build` when opening the file with IntelliJ. It does not automatically generated sources.
+
 == Inspiration
 
 Started with link:https://github.com/JamiesWhiteShirt/kapt-example[JamiesWhiteShirt kapt-example], then added some link:https://github.com/miquelbeltran/kotlin-code-gen-sample/[miquelbeltran kotlin-code-gen-sample].
