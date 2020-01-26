@@ -11,12 +11,11 @@ import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
-import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
-class KtAnnotationProcessor: AbstractProcessor() {
+class GreeterExtension: AbstractProcessor() {
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return mutableSetOf(Greets::class.java.name)
