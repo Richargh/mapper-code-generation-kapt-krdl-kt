@@ -1,13 +1,17 @@
 package de.richargh.sandbox.kaptcodegen.processor
 
 import com.google.auto.service.AutoService
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.TypeSpec
 import de.richargh.sandbox.kaptcodegen.annnotations.Mapper
 import java.io.File
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
@@ -30,29 +34,19 @@ class MapperGenerator: AbstractProcessor() {
             val pack = processingEnv.elementUtils.getPackageOf(element).toString()
             generateClass(className, pack)
 
-            element.enclosedElements.forEach { enclosed ->
-                when(enclosed.kind) {
-                    ElementKind.CONSTRUCTOR -> {
-                        val constructor = enclosed as ExecutableElement
-                        println("$enclosed ${enclosed.kind} in ${enclosed.enclosedElements}")
+            element.constructors { constructor ->
+                println("$constructor ${constructor.kind} in ${constructor.enclosedElements}")
 
-                        constructor.parameters.forEach { parameter ->
-                            val type = parameter.asType()
+                constructor.parameters.forEach { parameter ->
+                    val type = parameter.asType()
 
-                            val parameterElement = processingEnv.typeUtils.asElement(type)
-                            when(parameterElement){
-                                is TypeElement -> {
-                                    println("Constructor argument: ${parameter.simpleName} : $type")
-                                    parameterElement.enclosedElements.forEach {
-                                        if(it is ExecutableElement && it.kind == ElementKind.CONSTRUCTOR){
-                                            println("-- ${it.parameters}")
-                                            // processingEnv.typeUtils.getPrimitiveType()
-                                        }
-                                    }
-                                }
-
+                    val parameterElement = processingEnv.typeUtils.asElement(type)
+                    when (parameterElement) {
+                        is TypeElement -> {
+                            println("Constructor argument: ${parameter.simpleName} : $type")
+                            parameterElement.constructors {
+                                println("-- ${it.parameters}")
                             }
-
                         }
                     }
                 }
@@ -61,6 +55,22 @@ class MapperGenerator: AbstractProcessor() {
         return true
     }
 
+    /**
+     * Finds all constructors in an element, if there are any.
+     *
+     * Alternative necessary because the javax util variant fails with an java.lang.reflect.InvocationTargetException
+     * I believe that is because some elements in Kotlin throw an exception when asking for their kind,
+     * so you need to check their type first.
+     *
+     * @see javax.lang.model.util.ElementFilter.constructorsIn
+     */
+    private fun Element.constructors(handler: (ExecutableElement) -> Unit) {
+        enclosedElements.forEach { enclosed ->
+            if (enclosed is ExecutableElement && enclosed.kind == ElementKind.CONSTRUCTOR) {
+                handler(enclosed)
+            }
+        }
+    }
 
     private fun generateClass(className: String, pack: String) {
         val fileName = "${className}Mapper"
