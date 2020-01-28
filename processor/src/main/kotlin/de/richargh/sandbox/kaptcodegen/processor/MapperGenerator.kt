@@ -31,29 +31,28 @@ class MapperGenerator: AbstractProcessor() {
         roundEnv.getElementsAnnotatedWith(Mapper::class.java).forEach { element ->
             val className = element.simpleName.toString()
             println("Processing: $className")
-            val pack = processingEnv.elementUtils.getPackageOf(element).toString()
+            val pack = element.packageOf().toString()
             generateClass(className, pack)
 
             element.constructors { constructor ->
                 println("$constructor ${constructor.kind} in ${constructor.enclosedElements}")
 
-                constructor.parameters.forEach { parameter ->
-                    val type = parameter.asType()
-
-                    val parameterElement = processingEnv.typeUtils.asElement(type)
-                    when (parameterElement) {
-                        is TypeElement -> {
-                            println("Constructor argument: ${parameter.simpleName} : $type")
-                            parameterElement.constructors {
-                                println("-- ${it.parameters}")
-                            }
-                        }
+                constructor.parameterElements().forEach { parameter ->
+                    println("Constructor argument: ${parameter.simpleName} : ${parameter.asType()}")
+                    parameter.constructors {
+                        println("-- ${it.parameters}")
                     }
                 }
             }
         }
         return true
     }
+
+    private fun ExecutableElement.parameterElements(): List<TypeElement> = parameters
+            .map { variableElement -> processingEnv.typeUtils.asElement(variableElement.asType()) }
+            .filterIsInstance<TypeElement>()
+
+    private fun Element.packageOf() = processingEnv.elementUtils.getPackageOf(this)
 
     /**
      * Finds all constructors in an element, if there are any.
