@@ -38,9 +38,13 @@ class MapperGenerator: AbstractProcessor() {
                 println("$constructor ${constructor.kind} in ${constructor.enclosedElements}")
 
                 constructor.parameterElements().forEach { parameter ->
-                    println("Constructor argument: ${parameter.simpleName} : ${parameter.asType()}")
-                    parameter.constructors {
-                        println("-- ${it.parameters}")
+                    if(parameter is TypeElement) {
+                        println("Constructor type parameter: ${parameter.simpleName} : ${parameter.asType()}")
+                        parameter.constructors {
+                            println("-- ${it.parameters}")
+                        }
+                    }else {
+                        println("Constructor parameter: ${parameter}")
                     }
                 }
             }
@@ -48,9 +52,8 @@ class MapperGenerator: AbstractProcessor() {
         return true
     }
 
-    private fun ExecutableElement.parameterElements(): List<TypeElement> = parameters
+    private fun ExecutableElement.parameterElements(): List<Element> = parameters
             .map { variableElement -> processingEnv.typeUtils.asElement(variableElement.asType()) }
-            .filterIsInstance<TypeElement>()
 
     private fun Element.packageOf() = processingEnv.elementUtils.getPackageOf(this)
 
@@ -77,7 +80,7 @@ class MapperGenerator: AbstractProcessor() {
                 .addType(TypeSpec.classBuilder(fileName)
                                  .addFunction(FunSpec.builder("map")
                                                       .addParameter(className, ClassName(pack, className))
-                                                      .addStatement("""return $className("bar", 21, Person("Me"))""")
+                                                      .addStatement("""return $className("bar", 21, Person("Me"), Language.other("none"))""")
                                                       .build())
                                  .build())
                 .build()
